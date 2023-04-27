@@ -88,17 +88,17 @@ exports.loginUser = async (req, res, next) => {
 };
 
 exports.currentUser = async (req, res, next) => {
+  const { username } = req.user;
+
   try {
     User.findOne({ username: username })
       .then((user) => {
-        console.log(user);
         res.json({
           user: {
             iduser: user._id,
             username: user.username,
             role: user.role,
           },
-          token: token,
         });
       })
       .catch((err) => res.status(400).send(err));
