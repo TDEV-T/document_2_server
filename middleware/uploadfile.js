@@ -3,17 +3,23 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, "uploads");
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    cb(null, `${file.filename}-${Date.now()}${ext}`);
+    cb(null, `${file.originalname}-${Date.now()}${ext}`);
   },
 });
 
 const fileFiltercustom = (req, file, cb) => {
   const ext = path.extname(file.originalname);
-  if (ext !== ".pdf" && ext !== ".docx") {
+  if (
+    ext !== ".pdf" &&
+    ext !== ".docx" &&
+    ext !== ".jpg" &&
+    ext !== ".png" &&
+    ext !== ".jpeg"
+  ) {
     return cb(new Error("Only PDF and DOCX files are allowed"));
   }
   cb(null, true);
