@@ -8,13 +8,13 @@ const { download, uploadFile } = require("./../controller/upload");
 //middleware
 const { upload } = require("./../middleware/uploadfile");
 
-router.post("/upload", upload.single("file"), (req, res) => {
-  if (!req.file) {
-    res.status(400).send("No File Uploaded");
-  } else {
-    res.send(`file uploaded :{$req.file.filename}`);
-  }
-});
+// router.post("/upload", upload.single("file"), (req, res) => {
+//   if (!req.file) {
+//     res.status(400).send("No File Uploaded");
+//   } else {
+//     res.send(`file uploaded :{$req.file.filename}`);
+//   }
+// });
 
 router.post(
   "/fileupload",
@@ -29,6 +29,6 @@ router.post(
   uploadFile
 );
 
-router.get("/download/:filename", download);
+router.get("/download/:filename", auth, download);
 
 module.exports = router;

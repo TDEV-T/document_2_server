@@ -37,6 +37,12 @@ exports.uploadFile = async (req, res, next) => {
     const reqfiles = req.files;
     const filename = {};
 
+    var fileCheck = File.findOne({ title: req.body.header });
+
+    if (fileCheck) {
+      return res.status(400).send("File header already to use !");
+    }
+
     Object.keys(reqfiles).map((key) => {
       const fileArray = reqfiles[key];
       const filteredArray = fileArray.filter((file) => {
@@ -68,7 +74,7 @@ exports.uploadFile = async (req, res, next) => {
       .then((result) => {
         console.log(result);
         res.status(201).json({
-          message: "Topic created successfully",
+          message: "Create Success !",
           topic: result,
         });
       })
