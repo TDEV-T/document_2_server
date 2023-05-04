@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-
+const archiver = require("archiver");
 const mongoose = require("mongoose");
 const File = require("./../models/File");
 
@@ -82,6 +82,40 @@ exports.uploadFile = async (req, res, next) => {
         console.log(err);
         res.status(500).json({ error: err });
       });
+  } catch (err) {
+    console.log(err);
+    res.json({ status: "error", message: "Server Error !" });
+  }
+};
+
+exports.zipDownload = async (req, res, next) => {
+  try {
+    const filenames = req.body.files;
+
+    const archive = archiver("zip");
+
+    const filesDir = path.join(__dirname, "");
+    const files = [];
+
+    filenames.forEach((filename) => {
+      const file = path.join("uploads/", filename);
+      console.log(file);
+      if (fs.existsSync(file)) {
+        files.push(file);
+      }
+    });
+
+    files.forEach((file) => {
+      archive.file(file, { name: path.basename(file) });
+    });
+
+    archive.on("error", function (err) {
+      res.status(500).send({ error: err.message });
+    });
+
+    res.attachment("archive.zip");
+    archive.pipe(res);
+    archive.finalize();
   } catch (err) {
     console.log(err);
     res.json({ status: "error", message: "Server Error !" });

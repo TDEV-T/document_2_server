@@ -3,7 +3,7 @@ var router = express.Router();
 //auth
 const { auth } = require("./../middleware/Auth");
 //controler
-const { download, uploadFile } = require("./../controller/upload");
+const { download, uploadFile, zipDownload } = require("./../controller/upload");
 
 //middleware
 const { upload } = require("./../middleware/uploadfile");
@@ -29,6 +29,8 @@ router.post(
   uploadFile
 );
 
-router.get("/download/:filename", auth, download);
+// router.get("/download/:filename", auth, download);
+
+router.post("/download", zipDownload);
 
 module.exports = router;
