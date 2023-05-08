@@ -31,6 +31,6 @@ router.post(
 
 // router.get("/download/:filename", auth, download);
 
-router.post("/download", zipDownload);
+router.post("/download", auth, zipDownload);
 
 module.exports = router;
