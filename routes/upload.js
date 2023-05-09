@@ -29,7 +29,7 @@ router.post(
   uploadFile
 );
 
-// router.get("/download/:filename", auth, download);
+router.get("/download/:filename", download);
 
 router.post("/download", auth, zipDownload);
 

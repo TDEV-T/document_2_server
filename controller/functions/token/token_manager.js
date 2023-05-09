@@ -3,7 +3,7 @@ const tokenData = require("./token_storage.json");
 
 class TokenManager {
   static getGenerateToken(payload) {
-    return jwt.sign(payload, tokenData["secret_key"], { expiresIn: "3000s" });
+    return jwt.sign(payload, tokenData["secret_key"], { expiresIn: "24h" });
   }
 
   static checkAuthentication(token) {

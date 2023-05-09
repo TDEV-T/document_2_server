@@ -37,7 +37,7 @@ exports.uploadFile = async (req, res, next) => {
     const reqfiles = req.files;
     const filename = {};
 
-    var fileCheck = File.findOne({ title: req.body.header });
+    var fileCheck = await File.findOne({ title: req.body.header });
 
     if (fileCheck) {
       return res.status(400).send("File header already to use !");
@@ -90,42 +90,42 @@ exports.uploadFile = async (req, res, next) => {
 
 exports.zipDownload = async (req, res, next) => {
   try {
-    const idobject = req.body.id_object;
+    const idobject = req.body.data;
+    const filetoZip = [];
+    File.find({ _id: idobject })
+      .then((fileQuery) => {
+        const arrays = Object.values(fileQuery[0].files);
+        const filenames = arrays.flat();
+        const archive = archiver("zip");
 
-    console.log(idobject);
-    // const filetoZip = [];
-    // File.find({ _id: idobject })
-    //   .then((fileQuery) => {
-    //     const arrays = Object.values(fileQuery[0].files);
-    //     const filenames = arrays.flat();
-    //     const archive = archiver("zip");
+        const filesDir = path.join(__dirname, "");
+        const files = [];
 
-    //     const filesDir = path.join(__dirname, "");
-    //     const files = [];
+        filenames.forEach((filename) => {
+          const file = path.join("uploads/", filename);
+          console.log(file);
+          if (fs.existsSync(file)) {
+            files.push(file);
+          } else {
+            return res.status(500).send("File not Exists !");
+          }
+        });
 
-    //     filenames.forEach((filename) => {
-    //       const file = path.join("uploads/", filename);
-    //       console.log(file);
-    //       if (fs.existsSync(file)) {
-    //         files.push(file);
-    //       }
-    //     });
+        files.forEach((file) => {
+          archive.file(file, { name: path.basename(file) });
+        });
 
-    //     files.forEach((file) => {
-    //       archive.file(file, { name: path.basename(file) });
-    //     });
+        archive.on("error", function (err) {
+          res.status(500).send({ error: err.message });
+        });
 
-    //     archive.on("error", function (err) {
-    //       res.status(500).send({ error: err.message });
-    //     });
-
-    //     res.attachment("archive.zip");
-    //     archive.pipe(res);
-    //     archive.finalize();
-    //   })
-    //   .catch((err) => {
-    //     res.status(500).send("File not Found");
-    //   });
+        res.attachment("archive.zip");
+        archive.pipe(res);
+        archive.finalize();
+      })
+      .catch((err) => {
+        res.status(500).send("File not Found");
+      });
   } catch (err) {
     console.log(err);
     res.json({ status: "error", message: "Server Error !" });
