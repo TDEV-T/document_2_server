@@ -8,16 +8,6 @@ const { getFileAll, editFile } = require("./../controller/File");
 const { upload } = require("./../middleware/uploadfile");
 
 router.post("/getFileAll", auth, getFileAll);
-router.post(
-  "/editFile",
-  upload.fields([
-    { name: "file1" },
-    { name: "file2" },
-    { name: "file3" },
-    { name: "file4" },
-    { name: "file5" },
-  ]),
-  editFile
-);
+router.post("/editFileImg", auth, upload.single("file"), editFile);
 
 module.exports = router;
