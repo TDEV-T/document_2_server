@@ -16,8 +16,13 @@ exports.getFileAll = async (req, res, next) => {
 exports.editFile = async (req, res, next) => {
   try {
     const fileUpdate = req.file;
+    const {id}
     console.log(req.body);
-    res.send(fileUpdate);
+    res.json({
+      status: "done",
+      url: "http://localhost:3306",
+      fileUpdate,
+    });
   } catch (err) {
     console.log(err);
     res.status(400).send(err);
